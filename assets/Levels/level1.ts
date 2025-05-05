@@ -1,6 +1,6 @@
 
 import { _decorator, Component, Node } from 'cc';
-import { TILE_TYPE_ENUM } from '../enums';
+import { TILE_TYPE_ENUM } from '../Enums';
 import { ILevel } from '.';
 const { ccclass, property } = _decorator;
 

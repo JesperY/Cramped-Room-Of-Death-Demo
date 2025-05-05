@@ -5,7 +5,7 @@
  * Author = RubySIU
  * FileBasename = index.ts
  * FileBasenameNoExtension = index
- * URL = db://assets/enums/index.ts
+ * URL = db://assets/Enums/index.ts
  * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
  *
  */
@@ -21,4 +21,8 @@ export enum TILE_TYPE_ENUM{
     CLIFF_LEFT = 'CLIFF_LEFT',
     CLIFF_CENTER = 'CLIFF_CENTER',
     CLIFF_RIGHT = 'CLIFF_RIGHT'
+}
+
+export enum EVENT_ENUM{
+    NEXT_LEVEL = 'NEXT_LEVEL'
 }

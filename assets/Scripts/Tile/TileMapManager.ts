@@ -2,7 +2,9 @@
 import { _decorator, Component, Layers, Node, resources, Sprite, SpriteFrame, UITransform } from 'cc';
 import Levels from '../../Levels';
 import { TileManager } from './TileManager';
-import { createUINode } from '../../Utils';
+import { createUINode, randomByRange } from '../../Utils';
+import DataManager from '../../Runtime/DataManager';
+import ResourceManager from '../../Runtime/ResourceManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,8 +22,8 @@ const { ccclass, property } = _decorator;
 @ccclass('TileMapManager')
 export class TileMapManager extends Component {
     async init(){
-        const {mapInfo} = Levels[`level${1}`];
-        const spriteFrames = await this.loadRes()
+        const {mapInfo} = DataManager.Instance;
+        const spriteFrames = await ResourceManager.Instance.loadDir('texture/tile/tile')
         // console.log(spriteFrames)
         for (let i=0; i<mapInfo.length; i++){
             const column = mapInfo[i];
@@ -32,7 +34,12 @@ export class TileMapManager extends Component {
                 }
 
                 const node = createUINode()
-                const imgSrc = `tile (${item.src})`
+
+                let number = item.src
+                if ((number === 1 || number === 5 || number === 9) && i % 2 === 0 && j % 2 ===0){
+                    number += randomByRange(0, 4)
+                }
+                const imgSrc = `tile (${number})`
                 const spriteFrame = spriteFrames.find(v=>v.name == imgSrc) || spriteFrames[0]
 
                 const tilemanager = node.addComponent(TileManager)
@@ -44,18 +51,6 @@ export class TileMapManager extends Component {
         }
     }
 
-    loadRes(){
-        return new Promise<SpriteFrame[]>((resolve, reject)=>{
-            resources.loadDir("texture/tile/tile", SpriteFrame, function(err, assets){
-                if(err){
-                    reject(err)
-                    return
-                }
-
-                resolve(assets)
-            })
-        })
-    }
 }
 
 

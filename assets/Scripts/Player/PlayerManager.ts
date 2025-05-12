@@ -2,9 +2,11 @@
 import { _decorator, Component, Node, Sprite, UITransform, Animation, AnimationClip, animation, SpriteFrame } from 'cc';
 import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import ResourceManager from '../../Runtime/ResourceManager';
-import { CONTROLLER_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enums';
+import { CONTROLLER_ENUM, DIRECTION_ENUM, DIRECTION_ORDER_ENUM, ENTITY_STATE_ENUM, ENTITY_TYPE_ENUM, EVENT_ENUM, PARAMS_NAME_ENUM } from '../../Enums';
 import { EventManager } from '../../Runtime/EventManager';
 import { PlayerStateMachine } from './PlayerStateMachine';
+import { EntityManager } from '../../Base/EntityManager';
+import DataManager from '../../Runtime/DataManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,32 +22,36 @@ const { ccclass, property } = _decorator;
  */
 
 @ccclass('PlayerManager')
-export class PlayerManager extends Component {
+export class PlayerManager extends EntityManager {
 
-    x: number = 0
-    y: number = 0
+
     targetX: number = 0
     targetY: number = 0
-    fsm:PlayerStateMachine = null
 
     private readonly speed: number = 1/10
 
+
     async init(){
-        const sprite = this.addComponent(Sprite)
-        sprite.sizeMode = Sprite.SizeMode.CUSTOM
-        const transform = this.getComponent(UITransform)
-        transform.setContentSize(TILE_WIDTH*4, TILE_HEIGHT*4)
-        // await this.render()
+
         this.fsm = this.addComponent(PlayerStateMachine)
         await this.fsm.init()
-        this.fsm.setParams(PARAMS_NAME_ENUM.IDEL, true)
-
-        EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.move, this)
+        super.init({
+            x: 2,
+            y: 8,
+            direction: DIRECTION_ENUM.UP,
+            state: ENTITY_STATE_ENUM.IDLE,
+            type: ENTITY_TYPE_ENUM.PLAYER
+        })
+        this.state = ENTITY_STATE_ENUM.IDLE
+        this.direction = DIRECTION_ENUM.UP
+        this.targetX = this.x
+        this.targetY = this.y
+        EventManager.Instance.on(EVENT_ENUM.PLAYER_CTRL, this.inputHandle, this)
     }
 
     update(){
         this.updateXY()
-        this.node.setPosition(this.x * TILE_WIDTH - TILE_WIDTH * 1.5, -this.y * TILE_HEIGHT + TILE_HEIGHT * 1.5)
+        super.update()
     }
 
     updateXY(){
@@ -68,7 +74,39 @@ export class PlayerManager extends Component {
 
     }
 
+    inputHandle(inputDirection: CONTROLLER_ENUM){
+        if(this.willBlock(inputDirection)){
+            return
+        }
+        this.move(inputDirection)
+    }
+
+    willBlock(inputDirection: CONTROLLER_ENUM){
+        const {targetX:x, targetY:y, direction} = this
+        const {tileInfo} = DataManager.Instance
+        if(inputDirection === CONTROLLER_ENUM.UP){
+            if(direction === DIRECTION_ENUM.UP){
+                const playerNextY = y-1
+                const weaponNextY = y-2
+                if(playerNextY < 0){
+                    return true
+                }
+
+                const playerTile = tileInfo[x][playerNextY]
+                const weaponTile = tileInfo[x][weaponNextY]
+
+                if(playerTile && playerTile.movable && (!weaponTile || weaponTile.turnable)){
+                    // return true
+                }else{
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     move(inputDirection: CONTROLLER_ENUM){
+        // console.log(inputDirection)
         switch(inputDirection){
             case CONTROLLER_ENUM.UP:
                 this.targetY = this.y - 1
@@ -83,33 +121,19 @@ export class PlayerManager extends Component {
                 this.targetX = this.x + 1
                 break
             case CONTROLLER_ENUM.TURN_LEFT:
-                this.fsm.setParams(PARAMS_NAME_ENUM.TURNLEFT, true)
+                if (this.direction === DIRECTION_ENUM.UP){
+                    this.direction = DIRECTION_ENUM.LEFT
+                }else if (this.direction === DIRECTION_ENUM.LEFT){
+                    this.direction = DIRECTION_ENUM.DOWN
+                }else if (this.direction === DIRECTION_ENUM.DOWN){
+                    this.direction = DIRECTION_ENUM.RIGHT
+                }else if (this.direction === DIRECTION_ENUM.RIGHT){
+                    this.direction = DIRECTION_ENUM.UP
+                }
+                this.state = ENTITY_STATE_ENUM.TURNLEFT
                 break
         }
     }
 
-    // async render(){
-    //     const sprite = this.addComponent(Sprite)
-    //     sprite.sizeMode = Sprite.SizeMode.CUSTOM
-    //     const transform = this.getComponent(UITransform)
-    //     transform.setContentSize(TILE_WIDTH*4, TILE_HEIGHT*4)
-
-    //     const spriteFrames = await ResourceManager.Instance.loadDir('texture/player/idle/top')
-
-    //     const animationComponent = this.addComponent(Animation)
-    //     const animationClip = new AnimationClip()
-
-
-    //     const track = new animation.ObjectTrack()
-    //     track.path = new animation.TrackPath().toComponent(Sprite).toProperty('spriteFrame')
-    //     const frames: Array<[number, SpriteFrame]> = spriteFrames.map((item, index) => [ANIMATION_SPEED * index, item])
-    //     track.channel.curve.assignSorted(frames)
-    //     animationClip.addTrack(track)
-    //     animationClip.duration = frames.length * ANIMATION_SPEED
-    //     animationClip.wrapMode = AnimationClip.WrapMode.Loop
-
-    //     animationComponent.defaultClip = animationClip
-    //     animationComponent.play()
-    // }
 
 }

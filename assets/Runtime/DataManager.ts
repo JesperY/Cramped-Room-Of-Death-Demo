@@ -2,6 +2,7 @@
 import { _decorator, Component, Node } from 'cc';
 import { ITile } from '../Levels';
 import { Singleton } from '../Base/Singleton';
+import { TileManager } from '../Scripts/Tile/TileManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -27,6 +28,7 @@ export default class DataManager extends Singleton {
     mapRowCount: number = 0;
     mapColumnCount: number = 0;
     levelIndex: number = 1;
+    tileInfo:Array<Array<TileManager>>
 
     reset(){
         this.mapInfo = []

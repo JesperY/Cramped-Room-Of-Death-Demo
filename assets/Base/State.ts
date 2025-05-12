@@ -4,6 +4,7 @@ import { PlayerStateMachine } from '../Scripts/Player/PlayerStateMachine';
 import { TILE_HEIGHT } from '../Scripts/Tile/TileManager';
 import { TILE_WIDTH } from '../Scripts/Tile/TileManager';
 import ResourceManager from '../Runtime/ResourceManager';
+import { StateMachine } from './StateMachine';
 const { ccclass, property } = _decorator;
 
 /**
@@ -22,7 +23,7 @@ const ANIMATION_SPEED = 1/8
 
 export default class State{
     private animationClip: AnimationClip
-    constructor(private fsm:PlayerStateMachine,
+    constructor(private fsm:StateMachine,
         private path:string,
         private warpMode: AnimationClip.WrapMode = AnimationClip.WrapMode.Normal){
             this.init()
@@ -42,6 +43,7 @@ export default class State{
         const frames: Array<[number, SpriteFrame]> = spriteFrames.map((item, index) => [ANIMATION_SPEED * index, item])
         track.channel.curve.assignSorted(frames)
         this.animationClip.addTrack(track)
+        this.animationClip.name = this.path
         this.animationClip.duration = frames.length * ANIMATION_SPEED
         this.animationClip.wrapMode = this.warpMode
 

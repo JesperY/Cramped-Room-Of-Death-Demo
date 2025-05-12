@@ -24,9 +24,11 @@ export class TileMapManager extends Component {
     async init(){
         const {mapInfo} = DataManager.Instance;
         const spriteFrames = await ResourceManager.Instance.loadDir('texture/tile/tile')
+        DataManager.Instance.tileInfo = []
         // console.log(spriteFrames)
         for (let i=0; i<mapInfo.length; i++){
             const column = mapInfo[i];
+            DataManager.Instance.tileInfo[i] = []
             for (let j=0; j<column.length; j++){
                 const item = column[j];
                 if (item.src === null || item.type === null){
@@ -43,7 +45,9 @@ export class TileMapManager extends Component {
                 const spriteFrame = spriteFrames.find(v=>v.name == imgSrc) || spriteFrames[0]
 
                 const tilemanager = node.addComponent(TileManager)
-                tilemanager.init(spriteFrame, i, j)
+                const type = item.type
+                tilemanager.init(spriteFrame, i, j, type)
+                DataManager.Instance.tileInfo[i][j] = tilemanager
 
                 node.setParent(this.node)
 

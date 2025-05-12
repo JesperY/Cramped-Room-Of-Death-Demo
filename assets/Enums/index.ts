@@ -46,5 +46,30 @@ export enum FSM_PARAMS_TYPE_ENUM{
 
 export enum PARAMS_NAME_ENUM{
     IDEL = 'IDLE',
+    TURNLEFT = 'TURNLEFT',
+    DIRECTION = 'DIRECTION'
+}
+
+export enum DIRECTION_ENUM{
+    UP = 'UP',
+    DOWN = 'DOWN',
+    LEFT = 'LEFT',
+    RIGHT = 'RIGHT'
+}
+
+export enum ENTITY_STATE_ENUM{
+    IDLE = 'IDLE',
     TURNLEFT = 'TURNLEFT'
+}
+
+export enum DIRECTION_ORDER_ENUM{
+    UP=0,
+    LEFT=1,
+    DOWN=2,
+    RIGHT=3
+}
+
+export enum ENTITY_TYPE_ENUM{
+    PLAYER = 'PLAYER',
+    // ENEMY = 'ENEMY'
 }

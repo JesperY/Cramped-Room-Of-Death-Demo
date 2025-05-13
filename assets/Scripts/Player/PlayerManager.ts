@@ -89,6 +89,7 @@ export class PlayerManager extends EntityManager {
                 const playerNextY = y-1
                 const weaponNextY = y-2
                 if(playerNextY < 0){
+                    this.state = ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
 
@@ -98,8 +99,34 @@ export class PlayerManager extends EntityManager {
                 if(playerTile && playerTile.movable && (!weaponTile || weaponTile.turnable)){
                     // return true
                 }else{
+                    this.state = ENTITY_STATE_ENUM.BLOCKFRONT
                     return true
                 }
+            }
+        }else if(inputDirection === CONTROLLER_ENUM.TURN_LEFT){
+            let nextX
+            let nextY
+            if (this.direction === DIRECTION_ENUM.UP){
+                nextX = x-1
+                nextY = y-1
+            }else if (this.direction === DIRECTION_ENUM.LEFT){
+                nextX = x-1
+                nextY = y+1
+            }else if (this.direction === DIRECTION_ENUM.DOWN){
+                nextX = x+1
+                nextY = y+1
+            }else if (this.direction === DIRECTION_ENUM.RIGHT){
+                nextX = x+1
+                nextY = y-1
+            }
+
+            if((!tileInfo[nextX][nextY] || tileInfo[nextX][nextY].movable) &&
+             (!tileInfo[x][nextY] || tileInfo[x][nextY].turnable) &&
+             (!tileInfo[nextX][y] || tileInfo[nextX][y].movable)){
+                // return false
+            }else{
+                this.state = ENTITY_STATE_ENUM.BLOCKTURNLEFT
+                return true
             }
         }
         return false

@@ -1,11 +1,14 @@
 
 import { _decorator, AnimationClip, Component, Node, Animation, SpriteFrame } from 'cc';
-import { FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enums';
+import { ENTITY_STATE_ENUM, FSM_PARAMS_TYPE_ENUM, PARAMS_NAME_ENUM } from '../../Enums';
 const { ccclass, property } = _decorator;
 import State from '../../Base/State';
 import { getInitParmasNumber, getInitParmasTrigger, StateMachine } from '../../Base/StateMachine';
 import IdleSubStateMachine from './IdleSubStateMachine';
 import TurnLeftSubStateMachine from './TurnLeftSubStateMachine';
+import BlockFrontSubStateMachine from './BlockFrontSubStateMachine';
+import { EntityManager } from '../../Base/EntityManager';
+import BlockTurnLeftSubStateMachine from './BlockTurnLeftStateMachine';
 
 /**
  * Predefined variables
@@ -35,16 +38,18 @@ export class PlayerStateMachine extends StateMachine {
     initAnimationEvent(){
         this.animationComponent.on(Animation.EventType.FINISHED, ()=>{
             const name = this.animationComponent.defaultClip.name
-            const whiteList = ['turn']
+            const whiteList = ['block','turn']
             if (whiteList.some(v=>name.includes(v))){
-                this.setParams(PARAMS_NAME_ENUM.IDEL, true)
+                this.node.getComponent(EntityManager).state = ENTITY_STATE_ENUM.IDLE
+                // this.setParams(PARAMS_NAME_ENUM.IDEL, true)
             }
         })
     }
 
     initParams(){
         this.params.set(PARAMS_NAME_ENUM.IDEL, getInitParmasTrigger())
-
+        this.params.set(PARAMS_NAME_ENUM.BLOCKFRONT, getInitParmasTrigger())
+        this.params.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT, getInitParmasTrigger())
         this.params.set(PARAMS_NAME_ENUM.TURNLEFT, getInitParmasTrigger())
         this.params.set(PARAMS_NAME_ENUM.DIRECTION, getInitParmasNumber())
     }
@@ -52,14 +57,24 @@ export class PlayerStateMachine extends StateMachine {
     initStateMachine(){
         this.stateMachine.set(PARAMS_NAME_ENUM.IDEL, new IdleSubStateMachine(this))
         this.stateMachine.set(PARAMS_NAME_ENUM.TURNLEFT, new TurnLeftSubStateMachine(this))
+        this.stateMachine.set(PARAMS_NAME_ENUM.BLOCKFRONT, new BlockFrontSubStateMachine(this))
+        this.stateMachine.set(PARAMS_NAME_ENUM.BLOCKTURNLEFT, new BlockTurnLeftSubStateMachine(this))
     }
 
     run(){
         switch(this.currentState){
             case this.stateMachine.get(PARAMS_NAME_ENUM.TURNLEFT):
                 // break
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKFRONT):
+
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
+
             case this.stateMachine.get(PARAMS_NAME_ENUM.IDEL):
-                if (this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
+                if (this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
+                    this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT)
+                }else if (this.params.get(PARAMS_NAME_ENUM.BLOCKFRONT).value){
+                    this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKFRONT)
+                }else if (this.params.get(PARAMS_NAME_ENUM.TURNLEFT).value){
                     this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.TURNLEFT)
                 }else if(this.params.get(PARAMS_NAME_ENUM.IDEL).value){
                     this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.IDEL)

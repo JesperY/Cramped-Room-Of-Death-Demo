@@ -4,6 +4,7 @@ import { DIRECTION_ENUM, ENTITY_STATE_ENUM, PARAMS_NAME_ENUM, DIRECTION_ORDER_EN
 import { IEntity } from "../Levels"
 import { Sprite, UITransform } from "cc"
 import { TILE_HEIGHT, TILE_WIDTH } from "../Scripts/Tile/TileManager"
+import { StateMachine } from "./StateMachine"
 const { ccclass, property } = _decorator;
 
 @ccclass('EntityManager')
@@ -13,7 +14,7 @@ export class EntityManager extends Component {
     y: number = 0
 
 
-    fsm:PlayerStateMachine = null
+    fsm:StateMachine = null
 
     private _direction: DIRECTION_ENUM
     private _state:ENTITY_STATE_ENUM

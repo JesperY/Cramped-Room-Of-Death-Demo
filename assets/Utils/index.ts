@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Layers, Node, UITransform } from 'cc';
+import { _decorator, Component, Layers, Node, SpriteFrame, UITransform } from 'cc';
 const { ccclass, property } = _decorator;
 
 /**
@@ -25,3 +25,13 @@ export const createUINode = (name: string = '') => {
 export const randomByRange = (start: number, end: number)=>{
     return Math.floor(start + (end - start) * Math.random())
 }
+
+const getNumberWithinString = (str: string)=>{
+    const reg = /\((\d+)\)/
+    const match = str.match(reg)
+    return match ? parseInt(match[1]) : 0
+}
+
+export const sortSpriteFrames = (spriteFrames: SpriteFrame[])=>
+    spriteFrames.sort((a, b)=>getNumberWithinString(a.name) - getNumberWithinString(b.name))
+

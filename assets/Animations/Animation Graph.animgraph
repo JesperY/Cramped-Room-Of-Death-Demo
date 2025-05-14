@@ -9,7 +9,11 @@
         "__id__": 1
       }
     ],
-    "_variables": {}
+    "_variables": {
+      "attack": {
+        "__id__": 14
+      }
+    }
   },
   {
     "__type__": "cc.animation.Layer",
@@ -32,9 +36,19 @@
       },
       {
         "__id__": 5
+      },
+      {
+        "__id__": 6
+      },
+      {
+        "__id__": 9
       }
     ],
-    "_transitions": [],
+    "_transitions": [
+      {
+        "__id__": 12
+      }
+    ],
     "_entryState": {
       "__id__": 3
     },
@@ -56,5 +70,98 @@
   {
     "__type__": "cc.animation.State",
     "name": "Any"
+  },
+  {
+    "__type__": "cc.animation.Motion",
+    "__editorExtras__": {
+      "centerX": -238.9375,
+      "centerY": -28.484375,
+      "id": "17465328997290.7520062324094234"
+    },
+    "name": "idle",
+    "_components": [],
+    "motion": {
+      "__id__": 7
+    },
+    "speed": {
+      "__id__": 8
+    }
+  },
+  {
+    "__type__": "cc.animation.ClipMotion",
+    "__editorExtras__": {
+      "id": "17465328997280.19836703745761275",
+      "centerX": 0,
+      "centerY": 0
+    },
+    "clip": {
+      "__uuid__": "1039a7d6-193d-4829-8d17-01ec1b106642",
+      "__expectedType__": "cc.AnimationClip"
+    }
+  },
+  {
+    "__type__": "cc.animation.BindableNumber",
+    "variable": "",
+    "value": 1
+  },
+  {
+    "__type__": "cc.animation.Motion",
+    "__editorExtras__": {
+      "centerX": -246.9375,
+      "centerY": 77.515625,
+      "id": "17465329053030.45872334231434797"
+    },
+    "name": "idle",
+    "_components": [],
+    "motion": {
+      "__id__": 10
+    },
+    "speed": {
+      "__id__": 11
+    }
+  },
+  {
+    "__type__": "cc.animation.ClipMotion",
+    "__editorExtras__": {
+      "id": "17465329053020.6389368127567667",
+      "centerX": 0,
+      "centerY": 0
+    },
+    "clip": {
+      "__uuid__": "1039a7d6-193d-4829-8d17-01ec1b106642",
+      "__expectedType__": "cc.AnimationClip"
+    }
+  },
+  {
+    "__type__": "cc.animation.BindableNumber",
+    "variable": "",
+    "value": 1
+  },
+  {
+    "__type__": "cc.animation.AnimationTransition",
+    "from": {
+      "__id__": 6
+    },
+    "to": {
+      "__id__": 9
+    },
+    "conditions": [
+      {
+        "__id__": 13
+      }
+    ],
+    "duration": 0.3,
+    "relativeDuration": false,
+    "exitConditionEnabled": true,
+    "_exitCondition": 1
+  },
+  {
+    "__type__": "cc.animation.TriggerCondition",
+    "trigger": "attack"
+  },
+  {
+    "__type__": "cc.animation.Variable",
+    "_type": 2,
+    "_value": false
   }
 ]

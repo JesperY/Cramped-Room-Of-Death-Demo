@@ -9,7 +9,8 @@ import { TILE_HEIGHT, TILE_WIDTH } from '../Tile/TileManager';
 import { EventManager } from '../../Runtime/EventManager';
 import { EVENT_ENUM } from '../../Enums';
 import { PlayerManager } from '../Player/PlayerManager';
-import { WoodenSketelonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
+import { WoodenSkeletonManager } from '../WoodenSkeleton/WoodenSkeletonManager';
+import { DoorManager } from '../Door/DoorManager';
 
 /**
  * Predefined variables
@@ -53,6 +54,7 @@ export class BattleManager extends Component {
             this.generateTileMap()
             this.generatePlayer()
             this.generateEnemies()
+            this.generateDoor()
         }
     }
 
@@ -67,6 +69,13 @@ export class BattleManager extends Component {
         DataManager.Instance.reset()
     }
 
+    async generateDoor(){
+        const door = createUINode()
+        door.setParent(this.stage)
+        const doorManager = door.addComponent(DoorManager)
+        await doorManager.init()
+        DataManager.Instance.door = doorManager
+    }
     async generatePlayer(){
         const player = createUINode()
         player.setParent(this.stage)
@@ -95,9 +104,9 @@ export class BattleManager extends Component {
     async generateEnemies(){
         const enemy = createUINode()
         enemy.setParent(this.stage)
-        const woodenSketelonManager = enemy.addComponent(WoodenSketelonManager)
-        await woodenSketelonManager.init()
-        DataManager.Instance.enemies.push(woodenSketelonManager)
+        const woodenSkeletonManager = enemy.addComponent(WoodenSkeletonManager)
+        await woodenSkeletonManager.init()
+        DataManager.Instance.enemies.push(woodenSkeletonManager)
     }
 
     adaptPos(){

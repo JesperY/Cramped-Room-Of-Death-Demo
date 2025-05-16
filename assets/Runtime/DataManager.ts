@@ -4,7 +4,8 @@ import { ITile } from '../Levels';
 import { Singleton } from '../Base/Singleton';
 import { TileManager } from '../Scripts/Tile/TileManager';
 import { PlayerManager } from '../Scripts/Player/PlayerManager';
-import { WoodenSkeletonManager } from '../Scripts/WoodenSkeleton/WoodenSkeletonManager';
+import { WoodenSketelonManager } from '../Scripts/WoodenSkeleton/WoodenSkeletonManager';
+import { DoorManager } from '../Scripts/Door/DoorManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -33,6 +34,7 @@ export default class DataManager extends Singleton {
     tileInfo:Array<Array<TileManager>>
     player: PlayerManager
     enemies: Array<WoodenSkeletonManager>
+    door: DoorManager
 
     reset(){
         this.mapInfo = []

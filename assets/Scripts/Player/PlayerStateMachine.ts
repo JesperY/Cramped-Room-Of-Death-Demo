@@ -14,6 +14,8 @@ import BlockBackSubStateMachine from './BlockBackSubStateMachine';
 import BlockLeftSubStateMachine from './BlockLeftSubStateMachine';
 import BlockRightSubStateMachine from './BlockRightSubStateMachine';
 import TurnRightSubStateMachine from './TurnRightSubStateMachine';
+import DeathSubStateMachine from './DeathSubStateMachine';
+import AttackSubStateMachine from './AttackSubStateMachine';
 
 /**
  * Predefined variables
@@ -43,7 +45,7 @@ export class PlayerStateMachine extends StateMachine {
     initAnimationEvent(){
         this.animationComponent.on(Animation.EventType.FINISHED, ()=>{
             const name = this.animationComponent.defaultClip.name
-            const whiteList = ['block','turn']
+            const whiteList = ['block','turn', 'attack']
             if (whiteList.some(v=>name.includes(v))){
                 this.node.getComponent(EntityManager).state = ENTITY_STATE_ENUM.IDLE
                 // this.setParams(PARAMS_NAME_ENUM.IDEL, true)
@@ -62,6 +64,9 @@ export class PlayerStateMachine extends StateMachine {
         this.params.set(PARAMS_NAME_ENUM.BLOCKRIGHT, getInitParmasTrigger())
         this.params.set(PARAMS_NAME_ENUM.TURNRIGHT, getInitParmasTrigger())
         this.params.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT, getInitParmasTrigger())
+        this.params.set(PARAMS_NAME_ENUM.DEATH, getInitParmasTrigger())
+        this.params.set(PARAMS_NAME_ENUM.AIRDEATH, getInitParmasTrigger())
+        this.params.set(PARAMS_NAME_ENUM.ATTACK, getInitParmasTrigger())
     }
 
     initStateMachine(){
@@ -74,19 +79,24 @@ export class PlayerStateMachine extends StateMachine {
         this.stateMachine.set(PARAMS_NAME_ENUM.BLOCKLEFT, new BlockLeftSubStateMachine(this))
         this.stateMachine.set(PARAMS_NAME_ENUM.BLOCKRIGHT, new BlockRightSubStateMachine(this))
         this.stateMachine.set(PARAMS_NAME_ENUM.BLOCKTURNRIGHT, new BlockTurnRightSubStateMachine(this))
+        this.stateMachine.set(PARAMS_NAME_ENUM.DEATH, new DeathSubStateMachine(this))
+        // this.stateMachine.set(PARAMS_NAME_ENUM.AIRDEATH, new AirDeathSubStateMachine(this))
+        this.stateMachine.set(PARAMS_NAME_ENUM.ATTACK, new AttackSubStateMachine(this))
     }
 
     run(){
         switch(this.currentState){
             case this.stateMachine.get(PARAMS_NAME_ENUM.TURNLEFT):
-                // break
             case this.stateMachine.get(PARAMS_NAME_ENUM.TURNRIGHT):
-                // break
-            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKFRONT):
-
             case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT):
-
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKFRONT):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKBACK):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKLEFT):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKRIGHT):
             case this.stateMachine.get(PARAMS_NAME_ENUM.IDEL):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.DEATH):
+            case this.stateMachine.get(PARAMS_NAME_ENUM.ATTACK):
                 if (this.params.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT).value){
                     this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKTURNLEFT)
                 }else if(this.params.get(PARAMS_NAME_ENUM.BLOCKTURNRIGHT).value){
@@ -105,8 +115,11 @@ export class PlayerStateMachine extends StateMachine {
                     this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKLEFT)
                 }else if (this.params.get(PARAMS_NAME_ENUM.BLOCKRIGHT).value){
                     this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.BLOCKRIGHT)
-                }
-                else{
+                }else if (this.params.get(PARAMS_NAME_ENUM.DEATH).value){
+                    this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.DEATH)
+                }else if (this.params.get(PARAMS_NAME_ENUM.ATTACK).value){
+                    this.currentState = this.stateMachine.get(PARAMS_NAME_ENUM.ATTACK)
+                }else{
                     this.currentState = this.currentState
                 }
                 break

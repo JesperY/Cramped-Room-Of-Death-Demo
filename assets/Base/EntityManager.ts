@@ -5,6 +5,7 @@ import { IEntity } from "../Levels"
 import { Sprite, UITransform } from "cc"
 import { TILE_HEIGHT, TILE_WIDTH } from "../Scripts/Tile/TileManager"
 import { StateMachine } from "./StateMachine"
+import { randomByLen } from "../Utils"
 const { ccclass, property } = _decorator;
 
 @ccclass('EntityManager')
@@ -12,6 +13,7 @@ export class EntityManager extends Component {
 
     x: number = 0
     y: number = 0
+    id:string = randomByLen(12)
 
 
     fsm:StateMachine = null
@@ -55,6 +57,8 @@ export class EntityManager extends Component {
         this.node.setPosition(this.x * TILE_WIDTH - TILE_WIDTH * 1.5, -this.y * TILE_HEIGHT + TILE_HEIGHT * 1.5)
     }
 
+    onDestroy(){
+    }
 
 
 }

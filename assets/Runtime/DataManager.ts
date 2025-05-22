@@ -1,11 +1,14 @@
 
 import { _decorator, Component, Node } from 'cc';
-import { ITile } from '../Levels';
+import { ILevel, ITile } from '../Levels';
 import { Singleton } from '../Base/Singleton';
 import { TileManager } from '../Scripts/Tile/TileManager';
 import { PlayerManager } from '../Scripts/Player/PlayerManager';
-import { WoodenSketelonManager } from '../Scripts/WoodenSkeleton/WoodenSkeletonManager';
 import { DoorManager } from '../Scripts/Door/DoorManager';
+import { EnemyManager } from '../Base/EnemyManager';
+import { BurstManager } from '../Scripts/Burst/BurstManager';
+import { SpikeManager } from '../Scripts/Spike/SpikeManager';
+import { SmokeManager } from '../Scripts/Smoke/SmokeManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,6 +23,8 @@ const { ccclass, property } = _decorator;
  *
  */
 
+export type IRecord = Omit<ILevel, 'mapInfo'>
+
 @ccclass('DataManager')
 export default class DataManager extends Singleton {
 
@@ -33,15 +38,23 @@ export default class DataManager extends Singleton {
     levelIndex: number = 1;
     tileInfo:Array<Array<TileManager>>
     player: PlayerManager
-    enemies: Array<WoodenSkeletonManager>
+    enemies: Array<EnemyManager>
     door: DoorManager
+    bursts: Array<BurstManager>
+    spikes: Array<SpikeManager>
+    smokes: Array<SmokeManager>
 
+    records: Array<IRecord>
     reset(){
         this.mapInfo = []
         this.mapRowCount = 0
         this.mapColumnCount = 0
         this.player = null
         this.enemies = []
+        this.bursts = []
+        this.spikes = []
+        this.smokes = []
+        this.records = []
     }
 
 }
